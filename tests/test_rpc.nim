@@ -740,6 +740,14 @@ proc rpcMain*() =
       check res.yParity.isNone
       check res.gasPrice == w3Qty(30_000_000_000'u64)
 
+      # Protected legacy txs inside a full block carry the chain id too.
+      let blk = await client.eth_getBlockByNumber(blockId(1'u64), true)
+      check blk.transactions.len > 0
+      for item in blk.transactions:
+        check item.tx.chainId == Opt.some(env.chainId)
+      # An unprotected legacy tx has no chain id.
+      check populateTransactionObject(Transaction(txType: TxLegacy, V: 27)).chainId.isNone
+
       # Pending typed tx: gasPrice is the max fee, yParity is set.
       let pendingTx = env.makeBlobTx(6)
       discard env.txPool.addTx(pendingTx) # no-op when an earlier test added it

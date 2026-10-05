@@ -111,7 +111,6 @@ proc populateTransactionObject*(tx: Transaction,
                                 optionalNumber: Opt[uint64] = Opt.none(uint64),
                                 optionalTimestamp: Opt[EthTime] = Opt.none(EthTime),
                                 txIndex: Opt[uint64] = Opt.none(uint64),
-                                chainId: Opt[UInt256] = Opt.none(UInt256),
                                 baseFeePerGas: Opt[UInt256] = Opt.none(UInt256)): TransactionObject =
   result = TransactionObject()
   result.`type` = Opt.some Quantity(tx.txType)
@@ -146,9 +145,8 @@ proc populateTransactionObject*(tx: Transaction,
     result.chainId = Opt.some(tx.chainId)
     result.accessList = Opt.some(tx.accessList)
     result.yParity = Opt.some(Quantity(tx.V))
-  else:
-    if chainId.isSome:
-      result.chainId = chainId
+  elif tx.isEip155:
+    result.chainId = Opt.some(tx.chainId)
 
   if tx.txType >= TxEip1559:
     result.maxFeePerGas = Opt.some Quantity(tx.maxFeePerGas)
