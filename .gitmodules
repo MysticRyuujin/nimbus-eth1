@@ -30,7 +30,7 @@
 	branch = devel
 [submodule "vendor/nim-web3"]
 	path = vendor/nim-web3
-	url = https://github.com/status-im/nim-web3.git
+	url = https://github.com/MysticRyuujin/nim-web3.git
 	ignore = untracked
 	branch = master
 [submodule "vendor/nim-nat-traversal"]
